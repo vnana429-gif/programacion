@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía de Estudio .NET Framework y Windows Forms (C#) - Temas 1 a 4</title>
+    <style>
+        :root {
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --accent: #0284c7;
+            --accent-hover: #0369a1;
+            --text-main: #f8fafc;
+            --text-sub: #94a3b8;
+            --border: #334155;
+            --green: #10b981;
+            --amber: #f59e0b;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 15px;
+        }
+
+        h1 {
+            color: #38bdf8;
+            margin-bottom: 8px;
+            font-size: 26px;
+        }
+
+        p.subtitle {
+            color: var(--text-sub);
+            margin: 0;
+            font-size: 15px;
+        }
+
+        /* BARRA DE BÚSQUEDA */
+        .search-container {
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 14px 20px;
+            font-size: 15px;
+            border-radius: 12px;
+            border: 2px solid var(--accent);
+            background-color: #162032;
+            color: var(--text-main);
+            box-sizing: border-box;
+            outline: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            transition: all 0.2s ease;
+        }
+
+        .search-input:focus {
+            border-color: #38bdf8;
+            box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+        }
+
+        .search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: #1e293b;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            max-height: 320px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            margin-top: 5px;
+        }
+
+        .search-result-item {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .search-result-item:hover {
+            background-color: #334155;
+        }
+
+        .search-result-title {
+            color: #38bdf8;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .search-result-class {
+            font-size: 11px;
+            color: var(--amber);
+            margin-left: 8px;
+            background: rgba(245, 158, 11, 0.1);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        /* PESTAÑAS DE TEMAS */
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background-color: var(--card-bg);
+            color: var(--text-sub);
+            border: 1px solid var(--border);
+            padding: 10px 18px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn:hover {
+            color: #38bdf8;
+            border-color: #38bdf8;
+        }
+
+        .tab-btn.active {
+            background-color: var(--accent);
+            color: white;
+            border-color: var(--accent);
+            box-shadow: 0 0 10px rgba(2, 132, 199, 0.4);
+        }
+
+        /* CONTENIDO DE PÁGINAS */
+        .page-content {
+            display: none;
+        }
+
+        .page-content.active {
+            display: block;
+        }
+
+        .question-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            margin-bottom: 16px;
+            padding: 18px 20px;
+            transition: all 0.3s ease;
+        }
+
+        .question-card.highlight {
+            border: 2px solid var(--amber) !important;
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.6) !important;
+        }
+
+        .q-header {
+            font-size: 15px;
+            font-weight: bold;
+            color: #7dd3fc;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .q-badge {
+            background-color: var(--accent);
+            color: white;
+            font-size: 12px;
+            padding: 3px 8px;
+            border-radius: 12px;
+            flex-shrink: 0;
+        }
+
+        p.ans-text {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #e2e8f0;
+            margin: 0;
+            text-align: justify;
+        }
+
+        .standby-tag {
+            color: var(--amber);
+            font-style: italic;
+            font-weight: normal;
+        }
+
+        /* ESTILOS DE DIAGRAMAS Y CONTENEDORES VISUALES */
+        .diagram-container {
+            background-color: #0f172a;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 18px;
+            margin-top: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            overflow-x: auto;
+        }
+
+        .clock-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: auto auto auto;
+            gap: 10px;
+            align-items: center;
+            justify-items: center;
+            width: 100%;
+            max-width: 450px;
+        }
+
+        .horizontal-nodes {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: nowrap;
+        }
+
+        .node-box {
+            display: flex;
+            border: 2px solid var(--amber);
+            border-radius: 5px;
+            background-color: #1e293b;
+            overflow: hidden;
+            font-size: 11px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+        }
+
+        .node-val {
+            padding: 6px 10px;
+            background-color: #0284c7;
+            color: white;
+            font-weight: bold;
+        }
+
+        .node-next {
+            padding: 6px 8px;
+            background-color: #334155;
+            color: #38bdf8;
+            font-weight: bold;
+            border-left: 1px solid var(--border);
+        }
+
+        .node-prev {
+            padding: 6px 6px;
+            background-color: #1e293b;
+            color: var(--amber);
+            font-weight: bold;
+            border-right: 1px solid var(--border);
+        }
+
+        .pointer-label {
+            font-size: 11px;
+            color: var(--amber);
+            font-weight: bold;
+        }
+
+        .arrow-indicator {
+            color: #38bdf8;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .table-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            width: 100%;
+            max-width: 450px;
+            margin-top: 10px;
+        }
+
+        .table-cell {
+            background-color: #162032;
+            border: 1px solid var(--border);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checkbox-custom {
+            width: 16px;
+            height: 16px;
+            border-radius: 3px;
+            border: 1px solid var(--accent);
+            display: inline-block;
+            background-color: var(--card-bg);
+        }
+
+        .checkbox-custom.checked {
+            background-color: var(--green);
+            border-color: var(--green);
+            position: relative;
+        }
+
+        .checkbox-custom.checked::after {
+            content: '✓';
+            color: white;
+            font-size: 11px;
+            position: absolute;
+            top: -2px;
+            left: 2px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Evaluación .NET Framework y Windows Forms (C#)</h1>
+        <p class="subtitle">Guía de estudio oficial por Temas (1 a 4) enfocada en entorno .NET / C# / WinForms</p>
+    </header>
+
+    <!-- BUSCADOR -->
+    <div class="search-container">
+        <input type="text" id="searchInput" class="search-input" placeholder="🔍 Buscar pregunta o concepto en C# (ej. 'MDI', 'Array.Resize', 'Pila', 'Nodo')..." oninput="performSearch()">
+        <div id="searchResults" class="search-results"></div>
+    </div>
+
+    <!-- PESTAÑAS -->
+    <div class="nav-tabs">
+        <button class="tab-btn active" id="btn-tema1" onclick="switchPage('tema1', this)">Tema 1</button>
+        <button class="tab-btn" id="btn-tema2" onclick="switchPage('tema2', this)">Tema 2</button>
+        <button class="tab-btn" id="btn-tema3" onclick="switchPage('tema3', this)">Tema 3</button>
+        <button class="tab-btn" id="btn-tema4" onclick="switchPage('tema4', this)">Tema 4</button>
+    </div>
+
+    <!-- TEMA 1 -->
+    <div id="tema1" class="page-content active">
+        <!-- Pregunta 1 -->
+        <div class="question-card" id="q-1">
+            <div class="q-header"><span class="q-badge">P1</span> 1. ¿En qué se diferencia la forma de desarrollo planteada en .NET respecto de la forma de desarrollo Imperativa? ¿Por qué?</div>
+            <p class="ans-text">La diferencia principal es que el desarrollo imperativo exige que se programe paso a paso cómo realizar cada tarea de forma manual, a diferencia de .NET que es un modelo administrado donde el desarrollador especifica sus problemas para que sean resueltos. Esta diferencia es por el motor CLR que actúa como capa intermedia que gestiona la ejecución del programa. En cambio el .NET ofrece agilidad, seguridad y estabilidad en contraparte de ese enfoque imperativo tradicional.</p>
+        </div>
+
+        <!-- Pregunta 5 -->
+        <div class="question-card" id="q-5">
+            <div class="q-header"><span class="q-badge">P5</span> 5. ¿Qué es un módulo?</div>
+            <p class="ans-text">En el contexto de .NET y C#, la funcionalidad equivalente a un módulo se implementa mediante una clase estática declarada como static class. Es una estructura de código que permite agrupar métodos, funciones y variables de acceso global dentro del proyecto sin necesidad de instanciar un objeto con el operador new. Todos sus miembros deben ser estáticos (static) y se accede a ellos directamente mediante el nombre de la clase desde cualquier Form de la aplicación. Su función principal es organizar rutinas de utilidad general, variables globales o contener el punto de entrada Program.Main().</p>
+        </div>
+
+        <!-- Pregunta 9 -->
+        <div class="question-card" id="q-9">
+            <div class="q-header"><span class="q-badge">P9</span> 9. ¿Puedo agregar un método a un control? ¿Cómo?</div>
+            <p class="ans-text">Sí, en C# dentro de .NET Framework es totalmente posible agregar un método a un control existente utilizando Métodos de Extensión. Para lograrlo se define un método estático dentro de una static class y se utiliza la palabra clave this antes del primer parámetro, especificando el tipo de control a extender (por ejemplo, public static void MiMetodo(this TextBox txt)). De esta manera, el nuevo método queda inyectado directamente en la clase del control y se puede invocar desde cualquier instancia en WinForms como si fuera una función nativa de la clase.</p>
+        </div>
+
+        <!-- Pregunta 13 -->
+        <div class="question-card" id="q-13">
+            <div class="q-header"><span class="q-badge">P13</span> 13. ¿Cuáles son las propiedades que me indican la posición de un control en un formulario?</div>
+            <p class="ans-text">En Windows Forms con C#, la posición de un control dentro de la superficie del formulario se determina mediante sus propiedades numéricas Top y Left, o a través de la propiedad combinada Location de tipo System.Drawing.Point. La propiedad Left representa la distancia en píxeles desde el borde izquierdo del formulario contenedor, mientras que Top marca la distancia desde el borde superior. Ambas coordenadas fijan la esquina superior izquierda del control, permitiendo moverlo y ubicarlo de forma precisa dentro de la interfaz.</p>
+        </div>
+
+        <!-- Pregunta 17 -->
+        <div class="question-card" id="q-17">
+            <div class="q-header"><span class="q-badge">P17</span> 17. ¿Con qué propiedad indico que se habilite o se deshabilite un control?</div>
+            <p class="ans-text">En el Framework de .NET con C#, la propiedad que determina si un control de WinForms está habilitado para interactuar con el usuario es la propiedad Enabled, la cual acepta un valor booleano (true o false). Cuando se establece en true, el control responde a eventos de mouse y teclado como clics o tipeo de texto, mientras que al ponerla en false el control se atenúa visualmente y bloquea cualquier acción. Esta propiedad es esencial en C# para manejar la lógica de la interfaz según las validaciones del sistema.</p>
+        </div>
+
+        <!-- Pregunta 21 -->
+        <div class="question-card" id="q-21">
+            <div class="q-header"><span class="q-badge">P21</span> 21. ¿Cómo aumento el tamaño de un vector conservando su contenido?</div>
+            <p class="ans-text">En C# dentro de .NET Framework, para aumentar el tamaño de un vector o arreglo unidimensional conservando los elementos ya cargados se utiliza el método estático Array.Resize(ref miVector, nuevoTamaño). Al pasar el arreglo por referencia con la palabra clave ref, el entorno de .NET asigna un nuevo bloque de memoria con el tamaño deseado y copia automáticamente todos los elementos existentes al nuevo arreglo. De esta manera el vector expande su capacidad sin perder la información cargada previamente en sus posiciones anteriores.</p>
+        </div>
+
+        <!-- Pregunta 25 (Standby) -->
+        <div class="question-card" id="q-25">
+            <div class="q-header"><span class="q-badge">P25</span> 25. Pregunta 25 <span class="standby-tag">(Stand by - Imagen pendiente)</span></div>
+            <p class="ans-text">Esta pregunta corresponde al bloque de imágenes pendiente entre la posición 23 y 29. Queda registrada en la grilla oficial del Tema 1 a la espera de la imagen correspondiente para incorporar su respuesta específica.</p>
+        </div>
+
+        <!-- Pregunta 29 (Standby) -->
+        <div class="question-card" id="q-29">
+            <div class="q-header"><span class="q-badge">P29</span> 29. Pregunta 29 <span class="standby-tag">(Stand by - Imagen pendiente)</span></div>
+            <p class="ans-text">Esta pregunta corresponde al bloque de imágenes pendiente entre la posición 23 y 29. Queda registrada en la grilla oficial del Tema 1 a la espera de la imagen correspondiente para incorporar su respuesta específica.</p>
+        </div>
+
+        <!-- Pregunta 33 -->
+        <div class="question-card" id="q-33">
+            <div class="q-header"><span class="q-badge">P33</span> 33. Coloque las flechas necesarias para representar una Lista Enlazada Simple Circular. Agregue los nombres de cada una de sus partes.</div>
+            <p class="ans-text">En una lista enlazada simple circular, los 4 nodos dispuestos en forma de reloj se conectan secuencialmente en un solo sentido con la propiedad Siguiente. La variable primero apunta al Nodo 1 (arriba), este se enlaza al Nodo 2 (derecha), luego al Nodo 3 (abajo), pasa al Nodo 4 (izquierda) y la flecha final del Nodo 4 regresa cerrando el círculo apuntando nuevamente al Nodo 1.</p>
+            <div class="diagram-container">
+                <div class="clock-layout">
+                    <div></div>
+                    <div style="display:flex; flex-direction:column; align-items:center;">
+                        <span class="pointer-label">primero ➔</span>
+                        <div class="node-box"><div class="node-val">Dato</div><div class="node-next">Siguiente</div></div>
+                    </div>
+                    <div></div>
+
+                    <div style="display:flex; flex-direction:column; align-items:center;">
+                        <div class="node-box"><div class="node-val">Dato</div><div class="node-next">Siguiente</div></div>
+                    </div>
+                    <div style="color:var(--amber); font-weight:bold; font-size:12px;">↻ Ciclo</div>
+                    <div style="display:flex; flex-direction:column; align-items:center;">
+                        <div class="node-box"><div class="node-val">Dato</div><div class="node-next">Siguiente</div></div>
+                    </div>
+
+                    <div></div>
+                    <div style="display:flex; flex-direction:column; align-items:center;">
+                        <div class="node-box"><div class="node-val">Dato</div><div class="node-next">Siguiente</div></div>
+                    </div>
+                    <div></div>
+                </div>
+                <span style="color:var(--amber); font-size:12px; margin-top:8px;">★ Secuencia de enlaces: Nodo Arriba ➔ Derecha ➔ Abajo ➔ Izquierda ➔ Arriba (Cierra el ciclo)</span>
+            </div>
+        </div>
+
+        <!-- Pregunta 37 -->
+        <div class="question-card" id="q-37">
+            <div class="q-header"><span class="q-badge">P37</span> 37. ¿Cuándo una Lista está vacía?</div>
+            <p class="ans-text">En la implementación de listas enlazadas dinámicas en C#, una lista se considera vacía cuando la variable de referencia u objeto que señala al primer nodo es igual a null (Primero == null). Esto significa que la variable de clase no apunta a ninguna instancia cargada en la memoria Heap administrada por el CLR. Al evaluar esta condición condicional, el sistema en C# confirma que la lista no contiene nodos almacenados para buscar, recorrer o eliminar dentro de su estructura.</p>
+        </div>
+
+        <!-- Pregunta 41 -->
+        <div class="question-card" id="q-41">
+            <div class="q-header"><span class="q-badge">P41</span> 41. ¿Cuándo una Cola está llena?</div>
+            <p class="ans-text">En .NET Framework utilizando C#, una cola se encuentra llena cuando está basada en un arreglo de tamaño fijo y el número de elementos o el índice de Ultimo alcanza la capacidad máxima establecida. Por el contrario, si la cola está implementada con nodos dinámicos mediante referencias entre objetos, solo se considera llena cuando la memoria Heap administrada por el CLR se agota por completo al intentar usar new. Por lo tanto, la condición de límite depende strictly de si la reserva de memoria es fija o dinámica.</p>
+        </div>
+
+        <!-- Pregunta 45 -->
+        <div class="question-card" id="q-45">
+            <div class="q-header"><span class="q-badge">P45</span> 45. ¿Qué relación tiene una TDA con un Nodo? Identifique.</div>
+            <p class="ans-text">La relación es de composición: el TDA representa la estructura lógica completa (Lista, Pila o Cola) mientras que el Nodo es la unidad elemental de construcción en memoria Heap. En la representación gráfica del nodo individual se identifican sus dos componentes fundamentales: el área para almacenar el Dato (valor) y el puntero o referencia Siguiente que guarda la dirección de memoria del próximo nodo.</p>
+            <div class="diagram-container">
+                <div style="display:flex; flex-direction:column; align-items:center; gap:6px;">
+                    <span style="font-size:12px; color:var(--amber); font-weight:bold;">★ Estructura elemental de un Nodo</span>
+                    <div class="node-box" style="transform: scale(1.15); margin: 8px 0;">
+                        <div class="node-val">Dato (Información)</div>
+                        <div class="node-next">Siguiente (Puntero / Referencia)</div>
+                    </div>
+                    <span style="font-size:11px; color:#94a3b8;">Componente básico que compone visualmente al TDA</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pregunta 49 -->
+        <div class="question-card" id="q-49">
+            <div class="q-header"><span class="q-badge">P49</span> 49. Diseñe algoritmo para agregar un nodo a una Cola. Use sus propias variables</div>
+            <p class="ans-text">En C#, para agregar un nodo a una Cola se crea una nueva instancia mediante Nodo nuevo = new Nodo(dato) estableciendo su referencia Siguiente en null. Se verifica si la cola está vacía comprobando if (primero == null), en cuyo caso las variables de referencia primero y ultimo pasan a apuntar al nuevo objeto. Si ya contiene elementos, se enlaza ultimo.Siguiente = nuevo y se actualiza la variable ultimo = nuevo para que señale al nodo recién incorporado a la estructura.</p>
+        </div>
+    </div>
+
+    <!-- TEMA 2 -->
+    <div id="tema2" class="page-content">
+        <!-- Pregunta 2 -->
+        <div class="question-card" id="q-2">
+            <div class="q-header"><span class="q-badge">P2</span> 2. ¿Qué es un Framework?</div>
+            <p class="ans-text">Un framework es un entorno de trabajo estructurado que provee herramientas, bibliotecas reutilizables y reglas de diseño para desarrollar software de forma eficiente. Su objetivo es resolver la arquitectura básica y las tareas repetitivas del proyecto para que el programador se enfoque en la lógica del negocio. Opera bajo inversión de control, lo que significa que el framework administra el flujo del programa e invoca el código escrito según sea necesario.</p>
+        </div>
+
+        <!-- Pregunta 6 -->
+        <div class="question-card" id="q-6">
+            <div class="q-header"><span class="q-badge">P6</span> 6. ¿Qué es un evento?</div>
+            <p class="ans-text">En Windows Forms con C#, un evento es una notificación que envía un control u objeto cuando se produce una interacción sobre él, como un clic de mouse (Click) o un cambio en el texto (TextChanged). Se basa en el patrón emisor-receptor mediante delegados (event handlers), permitiendo asociar un método controlador mediante el operador +=. Cuando ocurre la acción, el CLR de .NET ejecuta automáticamente el método vinculado para responder a la interacción del usuario en la interfaz gráfica.</p>
+        </div>
+
+        <!-- Pregunta 10 -->
+        <div class="question-card" id="q-10">
+            <div class="q-header"><span class="q-badge">P10</span> 10. En un textbox, ¿en qué evento y con qué código obligo a que solo ingrese caracteres alfabéticos?</div>
+            <p class="ans-text">En un TextBox de WinForms en C# se utiliza el evento KeyPress evaluando la propiedad KeyChar de los argumentos e (KeyPressEventArgs). El código utiliza el método char.IsLetter(e.KeyChar) para verificar si la tecla presionada es alfabética, permitiendo también teclas de control como char.IsControl(e.KeyChar) para el borrado. Si la tecla no cumple con estas condiciones, se asigna e.Handled = true, cancelando la propagación del evento e impidiendo que el carácter no permitido aparezca en el TextBox.</p>
+        </div>
+
+        <!-- Pregunta 14 -->
+        <div class="question-card" id="q-14">
+            <div class="q-header"><span class="q-badge">P14</span> 14. ¿La propiedad Backcolor es común a todos los controles?. ¿Qué otras propiedades recuerda que sean comunes?</div>
+            <p class="ans-text">En Windows Forms con C#, la propiedad BackColor es común a casi todos los controles visuales, heredada directamente de la clase base System.Windows.Forms.Control para fijar el color de fondo. Otras propiedades comunes a todos los controles de WinForms son Name para su identificación en código, ForeColor para el color del texto, Font para la tipografía, Visible para mostrarlo u ocultarlo, Enabled para permitir o bloquear la interacción, y Location junto con Size para administrar su posición y tamaño.</p>
+        </div>
+
+        <!-- Pregunta 18 -->
+        <div class="question-card" id="q-18">
+            <div class="q-header"><span class="q-badge">P18</span> 18. ¿Qué puede decir respecto del control de flujo en el código? ¿Qué instrucciones conoce?</div>
+            <p class="ans-text">En el lenguaje C# dentro de .NET Framework, el control de flujo abarca la estructura sintáctica que determina el orden de ejecución de las instrucciones según condiciones lógicas o ciclos repetitivos. Permite alterar la ejecución secuencial línea a línea para tomar decisiones o iterar sobre bloques de código. Las instrucciones condicionales principales en C# son if...else y switch, mientras que para las estructuras repetitivas se utilizan los bucles for, foreach, while y do...while.</p>
+        </div>
+
+        <!-- Pregunta 22 -->
+        <div class="question-card" id="q-22">
+            <div class="q-header"><span class="q-badge">P22</span> 22. ¿Cómo reduzco el tamaño de un vector?</div>
+            <p class="ans-text">En C# dentro de .NET Framework, para reducir el tamaño de un vector o arreglo unidimensional se utiliza el método estático Array.Resize(ref miVector, nuevoTamaño) pasando una dimensión menor a la actual. Al invocar esta función con la palabra clave ref, el entorno de .NET asigna un nuevo bloque de memoria acortado y copia los elementos que caben en la nueva capacidad. Los elementos que superan el nuevo límite superior del arreglo se eliminan automáticamente de la memoria administrada.</p>
+        </div>
+
+        <!-- Pregunta 26 (Standby) -->
+        <div class="question-card" id="q-26">
+            <div class="q-header"><span class="q-badge">P26</span> 26. Pregunta 26 <span class="standby-tag">(Stand by - Imagen pendiente)</span></div>
+            <p class="ans-text">Esta pregunta corresponde al bloque de imágenes pendiente entre la posición 23 y 29. Queda registrada en la grilla oficial del Tema 2 a la espera de la imagen correspondiente para incorporar su respuesta específica.</p>
+        </div>
+
+        <!-- Pregunta 30 -->
+        <div class="question-card" id="q-30">
+            <div class="q-header"><span class="q-badge">P30</span> 30. Indique que variables deberían definirse mínimamente con el fin de lograr un control de una Cola. Tilde la que corresponda y agregue si cree que falta alguna necesaria.</div>
+            <p class="ans-text">Para implementar y controlar una Cola en C# se deben definir las variables de referencia primero y ultimo para gestionar los extremos de la estructura. En el cuadro visual se tildan la variable Primero (salida de datos) y Último (ingreso de datos), junto con Capacidad (límite estático) y Cuantos (conteo actual). Estas variables son esenciales para controlar las operaciones de encolar y desencolar sin perder la referencia en la memoria Heap.</p>
+            <div class="diagram-container">
+                <div class="table-grid">
+                    <div class="table-cell"><span class="checkbox-custom checked"></span> Primero</div>
+                    <div class="table-cell"><span class="checkbox-custom checked"></span> Último</div>
+                    <div class="table-cell"><span class="checkbox-custom"></span> Actual</div>
+                    <div class="table-cell"><span class="checkbox-custom"></span> Siguiente</div>
+                    <div class="table-cell"><span class="checkbox-custom checked"></span> Capacidad</div>
+                    <div class="table-cell"><span class="checkbox-custom checked"></span> Cuantos</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pregunta 34 -->
+        <div class="question-card" id="q-34">
+            <div class="q-header"><span class="q-badge">P34</span> 34. Coloque las flechas necesarias para representar una Lista Doblemente Enlazada Circular. Agregue los nombres de cada una de sus partes.</div>
+            <p class="ans-text">En una lista doblemente enlazada circular dispuesta en los 4 nodos en cruz/reloj, cada nodo posee el compartimento Anterior, Dato y Siguiente. Las flechas azules de Siguiente avanzan en sentido horario (Arriba ➔ Derecha ➔ Abajo ➔ Izquierda ➔ Arriba), mientras que las flechas rojas de Anterior avanzan en sentido antihorario, formando un anillo bidireccional cerrado.</p>
+            <div class="diagram-container">
+                <div class="clock-layout">
+                    <div></div>
+                    <div style="display:flex; flex-direction:column; align-items:center;">
+                        <span class="pointer-label">primero ➔</span>
+                        <div class="node-box"><div class="node-prev">Ant</div><div class="node-val">Dato</div><div class="node-next">Sig</div></div>
+                    </div>
+                    <div></div>
+
+                    <div style="display:flex; flex-direction:column; align-items:center;">
+                        <div class="node-box"><div class="node-prev">Ant</div><div class="node-val">Dato</div><div class="node-next">Sig</div></div>
+                    </div>
+                    <div style="color:var(--amber); font-weight:bold; font-size:12px;">⇆ Doble Ciclo</div>
+                    <div style="display:flex; flex-direction:column; align-items:center;">
+                        <div class="node-box"><div class="node-prev">Ant</div><div class="node-val">Dato</div><div class="node-next">Sig</div></div>
+                    </div>
+
+                    <div></div>
+                    <div style="display:flex; flex-direction:column; align-items:center;">
+                        <div class="node-box"><div class="node-prev">Ant</div><div class="node-val">Dato</div><div class="node-next">Sig</div></div>
+                    </div>
+                    <div></div>
+                </div>
+                <span style="color:var(--amber); font-size:12px; margin-top:8px;">★ Enlaces bidireccionales: Siguiente avanza en sentido horario y Anterior en sentido inverso</span>
+            </div>
+        </div>
+
+        <!-- Pregunta 38 -->
+        <div class="question-card" id="q-38">
+            <div class="q-header"><span class="q-badge">P38</span> 38. ¿Cuándo una Cola está vacía?</div>
+            <p class="ans-text">En C# dentro de .NET Framework, una Cola se considera vacía cuando la referencia u objeto primero es igual a null (primero == null), o cuando la variable entera de conteo cuantos es igual a cero. Esto indica que no hay ningún objeto o nodo almacenado dentro de la estructura en memoria. Al evaluar esta condición en el código se evita intentar desencolar o acceder a datos en una Cola sin elementos, previniendo excepciones de tipo NullReferenceException.</p>
+        </div>
+
+        <!-- Pregunta 42 -->
+        <div class="question-card" id="q-42">
+            <div class="q-header"><span class="q-badge">P42</span> 42. ¿Cuándo una Pila está llena?</div>
+            <p class="ans-text">En C#, una Pila está llena cuando está implementada sobre un arreglo estático de tamaño fijo y el índice o puntero de tope alcanza el límite de capacidad máxima definido. Si la Pila está construida mediante nodos dinámicos enlazados con referencias de objetos, solo se considera llena cuando la memoria Heap administrada por el CLR se agota al intentar instanciar un nuevo nodo con new. De este modo, la condición de tope máximo depende de si la estructura es de capacidad fija o dinámica.</p>
+        </div>
+
+        <!-- Pregunta 46 -->
+        <div class="question-card" id="q-46">
+            <div class="q-header"><span class="q-badge">P46</span> 46. Complete Algoritmo de Búsqueda / Modificación en Lista</div>
+            <p class="ans-text">En C#, el algoritmo de búsqueda analiza la lista iniciando en la referencia primero y utilizando un objeto auxiliar para recorrer los nodos mediante un bucle while (auxiliar != null). En cada paso verifica si el dato del nodo coincide con el valor buscado, cambiando una variable booleana existe a true al encontrarlo. Una vez localizado el nodo en la lista, el algoritmo permite modificar directamente su propiedad de datos antes de dar por finalizada la iteración.</p>
+        </div>
+
+        <!-- Pregunta 50 -->
+        <div class="question-card" id="q-50">
+            <div class="q-header"><span class="q-badge">P50</span> 50. Diseñe algoritmo para quitar un nodo a una Pila. Use sus propias variables</div>
+            <p class="ans-text">En C#, para quitar un nodo de una Pila se verifica primero que la estructura no esté vacía con if (tope != null). Luego se guarda el dato del nodo en una variable auxiliar para retornarla y se actualiza la referencia tope = tope.Siguiente para señalar al nodo inferior. Al quedar el nodo desvinculado sin referencias que lo apunten, el recolector de basura (Garbage Collector) de .NET se encarga de liberar la memoria Heap sobrante y se decrementa el contador de elementos.</p>
+        </div>
+    </div>
+
+    <!-- TEMA 3 -->
+    <div id="tema3" class="page-content">
+        <!-- Pregunta 3 -->
+        <div class="question-card" id="q-3">
+            <div class="q-header"><span class="q-badge">P3</span> 3. ¿Qué es un Formulario?</div>
+            <p class="ans-text">En Windows Forms de .NET con C#, un formulario es una clase que hereda de System.Windows.Forms.Form (public class MiForm : Form) y representa la ventana gráfica de la aplicación. Actúa como el contenedor principal donde se alojan los controles interactivos como botones, cuadros de texto y etiquetas. Además constituye la unidad fundamental donde se encapsula la lógica de presentación de la interfaz y la respuesta a eventos visuales del usuario en .NET.</p>
+        </div>
+
+        <!-- Pregunta 7 -->
+        <div class="question-card" id="q-7">
+            <div class="q-header"><span class="q-badge">P7</span> 7. ¿Qué es un método?. ¿Qué tipos conoce? ¿Qué devuelve cada uno?</div>
+            <p class="ans-text">En C# dentro de .NET Framework, un método es un bloque de código reutilizable estructurado dentro de una clase que ejecuta una tarea al ser invocado. Se dividen en dos tipos según su tipo de retorno: métodos que no devuelven valor declarados con el tipo void (equivalentes a procedimientos), y métodos que retornan un valor especificando el tipo de dato devuelto (int, string, bool, etc.). Los métodos con retorno emplean la instrucción return para entregar el resultado obtenido.</p>
+        </div>
+
+        <!-- Pregunta 11 -->
+        <div class="question-card" id="q-11">
+            <div class="q-header"><span class="q-badge">P11</span> 11. ¿Qué control utilizo para mostrar una imagen?</div>
+            <p class="ans-text">En Windows Forms con C#, el control utilizado para desplegar imágenes dentro de un formulario es el PictureBox. Permite cargar imágenes desde archivos o recursos del proyecto asignándolas a su propiedad Image, además de ajustar el modo de renderizado mediante la propiedad SizeMode (PictureBoxSizeMode). Al configurarlo en StretchImage o Zoom, la imagen se redimensiona o escala proporcionalmente dentro del contenedor visual en la pantalla.</p>
+        </div>
+
+        <!-- Pregunta 15 -->
+        <div class="question-card" id="q-15">
+            <div class="q-header"><span class="q-badge">P15</span> 15. Según el Framework de .Net todos los objetos que interactúan en un winform derivan de system..............</div>
+            <p class="ans-text">En la arquitectura de .NET Framework, todos los componentes gráficos que interactúan dentro de una aplicación de Windows Forms derivan de la clase base System.Windows.Forms.Control. Esta clase provee la funcionalidad visual básica, el renderizado de ventana, el manejo de coordenadas y la respuesta a eventos del sistema. Asimismo, dentro del modelo de tipos unificado de C#, todas las clases derivan en última instancia de la clase raíz System.Object.</p>
+        </div>
+
+        <!-- Pregunta 19 -->
+        <div class="question-card" id="q-19">
+            <div class="q-header"><span class="q-badge">P19</span> 19. ¿Qué ámbito puede tener una variable?</div>
+            <p class="ans-text">En C# dentro de .NET Framework, el ámbito de una variable determina la región del código donde es visible y accesible durante la ejecución. Puede ser de ámbito local cuando se declara dentro de un método o bloque de código y solo existe dentro de sus llaves, de ámbito de clase o campo (field) cuando se declara con el modificador private para ser vista por todos los métodos de esa clase, o de ámbito público (public) dentro de una clase o static class para ser accesible desde todo el proyecto.</p>
+        </div>
+
+        <!-- Pregunta 23 (Standby) -->
+        <div class="question-card" id="q-23">
+            <div class="q-header"><span class="q-badge">P23</span> 23. Pregunta 23 <span class="standby-tag">(Stand by - Imagen pendiente)</span></div>
+            <p class="ans-text">Esta pregunta corresponde al bloque de imágenes pendiente entre la posición 23 y 29. Queda registrada en la grilla oficial del Tema 3 a la espera de la imagen correspondiente para incorporar su respuesta específica.</p>
+        </div>
+
+        <!-- Pregunta 27 (Standby) -->
+        <div class="question-card" id="q-27">
+            <div class="q-header"><span class="q-badge">P27</span> 27. Pregunta 27 <span class="standby-tag">(Stand by - Imagen pendiente)</span></div>
+            <p class="ans-text">Esta pregunta corresponde al bloque de imágenes pendiente entre la posición 23 y 29. Queda registrada en la grilla oficial del Tema 3 a la espera de la imagen correspondiente para incorporar su respuesta específica.</p>
+        </div>
+
+        <!-- Pregunta 31 -->
+        <div class="question-card" id="q-31">
+            <div class="q-header"><span class="q-badge">P31</span> 31. Coloque las flechas necesarias para representar una Lista Enlazada Simple</div>
+            <p class="ans-text">En la lista enlazada simple representada sobre las 4 cajas en cruz/reloj, la variable primero apunta al Nodo 1 (arriba). La flecha de Siguiente del Nodo 1 apunta al Nodo 2 (derecha), la del Nodo 2 apunta al Nodo 3 (abajo), la del Nodo 3 apunta al Nodo 4 (izquierda), y el compartimento Siguiente del Nodo 4 se asigna a null marcando el fin de la lista.</p>
+            <div class="diagram-container">
+                <div class="clock-layout">
+                    <div></div>
+                    <div style="display:flex; flex-direction:column; align-items:center;">
+                        <span class="pointer-label">primero ➔</span>
+                        <div class="node-box"><div class="node-val">Dato</div><div class="node-next">Siguiente</div></div>
+                    </div>
+                    <div></div>
+
+                    <div style="display:flex; flex-direction:column; align-items:center;">
+                        <div class="node-box"><div class="node-val">Dato</div><div class="node-next">null</div></div>
+                    </div>
+                    <div style="color:var(--amber); font-weight:bold; font-size:12px;">➔ Secuencia</div>
+                    <div style="display:flex; flex-direction:column; align-items:center;">
+                        <div class="node-box"><div class="node-val">Dato</div><div class="node-next">Siguiente</div></div>
+                    </div>
+
+                    <div></div>
+                    <div style="display:flex; flex-direction:column; align-items:center;">
+                        <div class="node-box"><div class="node-val">Dato</div><div class="node-next">Siguiente</div></div>
+                    </div>
+                    <div></div>
+                </div>
+                <span style="color:var(--amber); font-size:12px; margin-top:8px;">★ Recorrido: Nodo Arriba ➔ Derecha ➔ Abajo ➔ Izquierda ➔ null</span>
+            </div>
+        </div>
+
+        <!-- Pregunta 35 -->
+        <div class="question-card" id="q-35">
+            <div class="q-header"><span class="q-badge">P35</span> 35. Coloque las flechas necesarias para representar una Cola. Agregue los nombres de cada una de sus partes. ¿Dónde Agrega?. ¿Dónde Elimina?</div>
+            <p class="ans-text">En C#, una Cola es una estructura FIFO representada por nodos dinámicos donde los nuevos elementos se agregan por el extremo referenciado por la variable objeto ultimo (operación Encolar), y las eliminaciones se efectúan por el extremo opuesto referenciado por primero (Desencolar). En el gráfico de 4 nodos horizontales, las flechas Siguiente enlazan de izquierda a derecha, indicando claramente las zonas de salida (Primero) e ingreso (Último).</p>
+            <div class="diagram-container">
+                <div class="horizontal-nodes">
+                    <div style="display:flex; flex-direction:column; align-items:center;">
+                        <span class="pointer-label">primero ➔</span>
+                        <div class="node-box"><div class="node-val">Dato</div><div class="node-next">Sig</div></div>
+                        <span style="font-size:10px; color:var(--green); font-weight:bold;">[ELIMINA]</span>
+                    </div>
+                    <span class="arrow-indicator">➔</span>
+                    <div class="node-box"><div class="node-val">Dato</div><div class="node-next">Sig</div></div>
+                    <span class="arrow-indicator">➔</span>
+                    <div class="node-box"><div class="node-val">Dato</div><div class="node-next">Sig</div></div>
+                    <span class="arrow-indicator">➔</span>
+                    <div style="display:flex; flex-direction:column; align-items:center;">
+                        <span class="pointer-label">ultimo ➔</span>
+                        <div class="node-box"><div class="node-val">Dato</div><div class="node-next">null</div></div>
+                        <span style="font-size:10px; color:#38bdf8; font-weight:bold;">[AGREGA]</span>
+                    </div>
+                </div>
+                <span style="color:var(--amber); font-size:12px; margin-top:8px;">★ Estructura FIFO: Desencola por Primero (izquierda) y Encola por Último (derecha)</span>
+            </div>
+        </div>
+
+        <!-- Pregunta 39 -->
+        <div class="question-card" id="q-39">
+            <div class="q-header"><span class="q-badge">P39</span> 39. ¿Cuándo una Pila está vacía?</div>
+            <p class="ans-text">En C#, una Pila se considera vacía cuando la variable objeto o referencia que señala a la cima es igual a null (tope == null). Esto significa que la estructura no posee ningún nodo o elemento guardado en la memoria Heap administrada por el CLR. Al verificar la condición if (tope == null) en el código, se evita ejecutar operaciones de desapilar sobre una Pila sin datos, previniendo excepciones en tiempo de ejecución.</p>
+        </div>
+
+        <!-- Pregunta 43 -->
+        <div class="question-card" id="q-43">
+            <div class="q-header"><span class="q-badge">P43</span> 43. ¿Qué es un Nodo?</div>
+            <p class="ans-text">En la implementación de estructuras de datos en C#, un nodo es una clase básica de almacenamiento dinámico utilizada para construir listas, pilas y colas en la memoria Heap. Se compone de dos o más miembros principales: variables o propiedades para almacenar el valor del dato, y una o más propiedades de referencia a objeto que contienen las direcciones de memoria de otros nodos para conectarse secuencialmente.</p>
+        </div>
+
+        <!-- Pregunta 47 -->
+        <div class="question-card" id="q-47">
+            <div class="q-header"><span class="q-badge">P47</span> 47. Pseudocódigo de recorrido e inserción en Lista</div>
+            <p class="ans-text">En C#, la inserción en una lista comienza instanciando un objeto mediante Nodo nuevo = new Nodo(dato). Si la lista está vacía (primero == null), la referencia primero apunta directamente al nuevo nodo. Si se inserta ordenadamente, se recorre la lista con un objeto auxiliar para ubicar la posición correcta, enlazando nuevo.Siguiente con el nodo posterior y ajustando la referencia del nodo anterior para mantener la cadena en memoria.</p>
+        </div>
+
+        <!-- Pregunta 49 -->
+        <div class="question-card" id="q-49-t3">
+            <div class="q-header"><span class="q-badge">P49</span> 49. Diseñe algoritmo para agregar un nodo a una Cola. Use sus propias variables</div>
+            <p class="ans-text">En C#, para agregar un nodo a una Cola se crea un objeto Nodo nuevo = new Nodo(dato) con su referencia Siguiente en null. Si la cola está vacía comprobando if (primero == null), las variables primero y ultimo pasan a referenciar a este objeto. En caso contrario, se enlaza ultimo.Siguiente = nuevo y se actualiza la variable ultimo = nuevo para indicar que la cola tiene un nuevo extremo de ingreso.</p>
+        </div>
+    </div>
+
+    <!-- TEMA 4 -->
+    <div id="tema4" class="page-content">
+        <!-- Pregunta 4 -->
+        <div class="question-card" id="q-4">
+            <div class="q-header"><span class="q-badge">P4</span> 4. ¿Qué es un formulario MDI?</div>
+            <p class="ans-text">En Windows Forms de .NET con C#, un formulario MDI (Multiple Document Interface) es una ventana contenedora padre que alberga y administra múltiples formularios hijos dentro de su área de trabajo. Se configura estableciendo su propiedad IsMdiContainer en true. Al instanciar un formulario hijo en C#, se asigna su propiedad MdiParent = this, permitiendo organizar aplicaciones complejas con múltiples ventanas integradas en una misma interfaz.</p>
+        </div>
+
+        <!-- Pregunta 8 -->
+        <div class="question-card" id="q-8">
+            <div class="q-header"><span class="q-badge">P8</span> 8. Enuncie al menos tres (3) controles e indique su uso y sus eventos por default.</div>
+            <p class="ans-text">Tres controles fundamentales en Windows Forms con C# son el Button utilizado para ejecutar acciones cuyo evento predeterminado es Click, el TextBox usado para ingresar o modificar texto cuyo evento por defecto es TextChanged, y el CheckBox utilizado para opciones de selección booleana cuyo evento por defecto es CheckedChanged. Cada control en WinForms combina sus propiedades visuales con eventos para responder a la interacción del usuario.</p>
+        </div>
+
+        <!-- Pregunta 12 -->
+        <div class="question-card" id="q-12">
+            <div class="q-header"><span class="q-badge">P12</span> 12. ¿Qué controles utilizo para que el usuario indique opciones predefinidas? Por ejemplo (Femenino, Masculino)</div>
+            <p class="ans-text">Para presentar opciones predefinidas en una interfaz de WinForms en C# se utilizan controles RadioButton cuando se busca una selección mutuamente excluyente de una única opción dentro de un contenedor, o el control ComboBox para ofrecer un menú desplegable de alternativas. En el caso de opciones de género, colocar dos controles RadioButton dentro de un GroupBox garantiza que al seleccionar uno, el otro se desmarque automáticamente.</p>
+        </div>
+
+        <!-- Pregunta 16 -->
+        <div class="question-card" id="q-16">
+            <div class="q-header"><span class="q-badge">P16</span> 16. ¿Con qué propiedad indico que se oculte o se muestre un control?</div>
+            <p class="ans-text">En Windows Forms de .NET con C#, la propiedad que define si un control es visible en la interfaz es la propiedad Visible de tipo bool. Al asignarle true el control se dibuja y renderiza normalmente en el Form, mientras que al establecerla en false el control permanece cargado en memoria pero se vuelve completamente invisible e inaccesible para el usuario hasta que se modifique su valor desde el código.</p>
+        </div>
+
+        <!-- Pregunta 20 -->
+        <div class="question-card" id="q-20">
+            <div class="q-header"><span class="q-badge">P20</span> 20. ¿Qué ámbito puede tener un método?</div>
+            <p class="ans-text">En C# dentro de .NET Framework, el ámbito o modificador de acceso de un método especifica la visibilidad desde dónde puede ser invocado en el programa. Si se declara como public puede ser llamado desde cualquier clase o Form del proyecto, si se declara como private solo puede ejecutarse internamente dentro de la misma clase donde fue definido, y si se declara como protected queda restringido a la clase actual y sus clases derivadas por herencia.</p>
+        </div>
+
+        <!-- Pregunta 24 (Standby) -->
+        <div class="question-card" id="q-24">
+            <div class="q-header"><span class="q-badge">P24</span> 24. Pregunta 24 <span class="standby-tag">(Stand by - Imagen pendiente)</span></div>
+            <p class="ans-text">Esta pregunta corresponde al bloque de imágenes pendiente entre la posición 23 y 29. Queda registrada en la grilla oficial del Tema 4 a la espera de la imagen correspondiente para incorporar su respuesta específica.</p>
+        </div>
+
+        <!-- Pregunta 28 (Standby) -->
+        <div class="question-card" id="q-28">
+            <div class="q-header"><span class="q-badge">P28</span> 28. Pregunta 28 <span class="standby-tag">(Stand by - Imagen pendiente)</span></div>
+            <p class="ans-text">Esta pregunta corresponde al bloque de imágenes pendiente entre la posición 23 y 29. Queda registrada en la grilla oficial del Tema 4 a la espera de la imagen correspondiente para incorporar su respuesta específica.</p>
+        </div>
+
+        <!-- Pregunta 32 -->
+        <div class="question-card" id="q-32">
+            <div class="q-header"><span class="q-badge">P32</span> 32. Coloque las flechas necesarias para representar una Lista Doblemente Enlazada. Agregue los nombres de cada una de sus partes.</div>
+            <p class="ans-text">En la lista doblemente enlazada sobre los 4 nodos en cruz/reloj, cada nodo posee la referencia Anterior (roja) y Siguiente (azul). La variable primero señala al Nodo 1 (arriba) y ultimo al Nodo 4 (izquierda). Los nodos intermedios están enlazados bidireccionalmente en ambos sentidos, terminando Anterior del Nodo 1 en null y Siguiente del Nodo 4 en null.</p>
+            <div class="diagram-container">
+                <div class="clock-layout">
+                    <div></div>
+                    <div style="display:flex; flex-direction:column; align-items:center;">
+                        <span class="pointer-label">primero ➔</span>
+                        <div class="node-box"><div class="node-prev">Ant</div><div class="node-val">Dato</div><div class="node-next">Sig</div></div>
+                    </div>
+                    <div></div>
+
+                    <div style="display:flex; flex-direction:column; align-items:center;">
+                        <span class="pointer-label">ultimo ➔</span>
+                        <div class="node-box"><div class="node-prev">Ant</div><div class="node-val">Dato</div><div class="node-next">Sig</div></div>
+                    </div>
+                    <div style="color:var(--amber); font-weight:bold; font-size:12px;">⇆ Doble Vínculo</div>
+                    <div style="display:flex; flex-direction:column; align-items:center;">
+                        <div class="node-box"><div class="node-prev">Ant</div><div class="node-val">Dato</div><div class="node-next">Sig</div></div>
+                    </div>
+
+                    <div></div>
+                    <div style="display:flex; flex-direction:column; align-items:center;">
+                        <div class="node-box"><div class="node-prev">Ant</div><div class="node-val">Dato</div><div class="node-next">Sig</div></div>
+                    </div>
+                    <div></div>
+                </div>
+                <span style="color:var(--amber); font-size:12px; margin-top:8px;">★ Doble enlace bidireccional entre los nodos de la estructura</span>
+            </div>
+        </div>
+
+        <!-- Pregunta 36 -->
+        <div class="question-card" id="q-36">
+            <div class="q-header"><span class="q-badge">P36</span> 36. Coloque las flechas necesarias para representar una Pila. Agregue los nombres de cada una de sus partes. ¿Dónde Agrega?. ¿Dónde Elimina?</div>
+            <p class="ans-text">En C#, una Pila es una estructura LIFO representada por nodos dinámicos donde las operaciones de ingresar (Apilar) y retirar (Desapilar) suceden exclusivamente por la cima referenciada por la variable objeto tope. En el gráfico de 4 nodos horizontales, la variable tope apunta al primer nodo (extremo superior de acceso), y las referencias Siguiente apuntan hacia la base de la pila.</p>
+            <div class="diagram-container">
+                <div class="horizontal-nodes">
+                    <div style="display:flex; flex-direction:column; align-items:center;">
+                        <span class="pointer-label">tope ➔</span>
+                        <div class="node-box"><div class="node-val">Dato</div><div class="node-next">Sig</div></div>
+                        <span style="font-size:10px; color:var(--amber); font-weight:bold;">[AGREGA Y ELIMINA]</span>
+                    </div>
+                    <span class="arrow-indicator">➔</span>
+                    <div class="node-box"><div class="node-val">Dato</div><div class="node-next">Sig</div></div>
+                    <span class="arrow-indicator">➔</span>
+                    <div class="node-box"><div class="node-val">Dato</div><div class="node-next">Sig</div></div>
+                    <span class="arrow-indicator">➔</span>
+                    <div style="display:flex; flex-direction:column; align-items:center;">
+                        <div class="node-box"><div class="node-val">Dato</div><div class="node-next">null</div></div>
+                        <span style="font-size:10px; color:#94a3b8;">(Base de Pila)</span>
+                    </div>
+                </div>
+                <span style="color:var(--amber); font-size:12px; margin-top:8px;">★ Estructura LIFO: Tanto Apilar como Desapilar se ejecutan sobre la cima señalada por Tope</span>
+            </div>
+        </div>
+
+        <!-- Pregunta 40 -->
+        <div class="question-card" id="q-40">
+            <div class="q-header"><span class="q-badge">P40</span> 40. ¿Cuándo una Lista está llena?</div>
+            <p class="ans-text">En C# dentro de .NET Framework, una lista enlazada dinámica basada en clases de nodos solo se considera llena cuando la memoria Heap del CLR se agota por completo al intentar asignar espacio con new. Si la lista estuviera implementada sobre una estructura fija de arreglo, estará llena cuando alcance el límite superior del índice. En la práctica habitual con referencias dinámicas de objetos en C# no existe un límite de capacidad predefinido.</p>
+        </div>
+
+        <!-- Pregunta 44 -->
+        <div class="question-card" id="q-44">
+            <div class="q-header"><span class="q-badge">P44</span> 44. ¿Qué es una TDA?</div>
+            <p class="ans-text">Un TDA o Tipo de Dato Abstracto en C# es un modelo que define una estructura de datos abstracta junto con el conjunto de operaciones o métodos públicos permitidos sobre ella, independientemente de cómo esté codificada internamente. Representa una especificación lógica que oculta la complejidad del almacenamiento en memoria Heap ofreciendo una interfaz clara mediante métodos como Insertar, Eliminar o Buscar. Ejemplos de TDA en C# son las Listas, Pilas y Colas.</p>
+        </div>
+
+        <!-- Pregunta 48 -->
+        <div class="question-card" id="q-48">
+            <div class="q-header"><span class="q-badge">P48</span> 48. Algoritmo para eliminar un nodo en Lista</div>
+            <p class="ans-text">En C#, para eliminar un nodo específico de una lista se realiza un recorrido con objetos de referencia auxiliar y anterior hasta dar con la coincidencia. Una vez localizado el nodo a retirar, se reasigna la propiedad anterior.Siguiente = auxiliar.Siguiente, salteando y desvinculando al nodo de la cadena. Al quedar el objeto sin referencias que lo apunten en la memoria Heap, el recolector de basura (Garbage Collector) de .NET destruye la instancia automáticamente.</p>
+        </div>
+
+        <!-- Pregunta 50 -->
+        <div class="question-card" id="q-50-t4">
+            <div class="q-header"><span class="q-badge">P50</span> 50. Diseñe algoritmo para quitar un nodo a una Pila. Use sus propias variables</div>
+            <p class="ans-text">En C#, para quitar un elemento de la Pila se evalúa primero que la variable de referencia tope no sea null con if (tope != null). Se almacena la información del nodo superior en una variable auxiliar para retornarla y se reasigna tope = tope.Siguiente, desvinculando el nodo de la cima. Al quedar el objeto sin referencias apuntándole dentro de la memoria Heap de .NET, el recolector de basura (Garbage Collector) libera la instancia automáticamente.</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // BASE DE DATOS PARA BUSCADOR
+    const questionsData = [
+        { id: 'q-1', tema: 'tema1', title: 'P1 - Diferencia desarrollo .NET e Imperativo', text: 'desarrollo imperativo modelo administrado clr garbage collector' },
+        { id: 'q-2', tema: 'tema2', title: 'P2 - Qué es un Framework', text: 'framework herramientas bibliotecas inversion de control arquitectura' },
+        { id: 'q-3', tema: 'tema3', title: 'P3 - Qué es un Formulario WinForms (C#)', text: 'formulario winform interfaz grafica controles form system.windows.forms c#' },
+        { id: 'q-4', tema: 'tema4', title: 'P4 - Qué es un formulario MDI', text: 'mdi formulario padre hijo ismdicontainer multipaginas' },
+        { id: 'q-5', tema: 'tema1', title: 'P5 - Qué es un módulo en C# (static class)', text: 'modulo static class estatico global variables funciones c#' },
+        { id: 'q-6', tema: 'tema2', title: 'P6 - Qué es un evento en WinForms (C#)', text: 'evento click += controlador de evento delegado' },
+        { id: 'q-7', tema: 'tema3', title: 'P7 - Qué es un método y tipos (void / retorno)', text: 'metodo void retorno valor procedimiento return c#' },
+        { id: 'q-8', tema: 'tema4', title: 'P8 - Tres controles y eventos por default', text: 'button textbox checkbox click textchanged checkedchanged' },
+        { id: 'q-9', tema: 'tema1', title: 'P9 - Agregar método a un control (Métodos de Extensión C#)', text: 'metodo extension static class this control c#' },
+        { id: 'q-10', tema: 'tema2', title: 'P10 - Textbox solo caracteres alfabéticos', text: 'keypress keychar char.isletter e.handled textbox winforms c#' },
+        { id: 'q-11', tema: 'tema3', title: 'P11 - Control para mostrar una imagen', text: 'picturebox image sizemode imagen winforms' },
+        { id: 'q-12', tema: 'tema4', title: 'P12 - Opciones predefinidas género', text: 'radiobutton combobox femenino masculino seleccion winforms' },
+        { id: 'q-13', tema: 'tema1', title: 'P13 - Propiedades de posición de control', text: 'top left location posicion coordenadas winforms' },
+        { id: 'q-14', tema: 'tema2', title: 'P14 - Propiedad Backcolor y comunes', text: 'backcolor forecolor font name visible enabled size location' },
+        { id: 'q-15', tema: 'tema3', title: 'P15 - Derivación de controles en .NET', text: 'system.windows.forms.control system.object jerarquia' },
+        { id: 'q-16', tema: 'tema4', title: 'P16 - Propiedad mostrar u ocultar', text: 'visible true false mostrar ocultar winforms' },
+        { id: 'q-17', tema: 'tema1', title: 'P17 - Propiedad habilitar o deshabilitar', text: 'enabled true false habilitar deshabilitar winforms' },
+        { id: 'q-18', tema: 'tema2', title: 'P18 - Control de flujo e instrucciones en C#', text: 'control de flujo if switch for foreach while do' },
+        { id: 'q-19', tema: 'tema3', title: 'P19 - Ámbito de una variable (local, field, public)', text: 'ambito local field clase global public private c#' },
+        { id: 'q-20', tema: 'tema4', title: 'P20 - Ámbito de un método', text: 'ambito metodo public private protected visibilidad' },
+        { id: 'q-21', tema: 'tema1', title: 'P21 - Aumentar tamaño de vector conservando (Array.Resize)', text: 'array.resize ref vector arreglos aumentar c#' },
+        { id: 'q-22', tema: 'tema2', title: 'P22 - Reducir tamaño de vector (Array.Resize)', text: 'array.resize ref reducir vector arreglo c#' },
+        { id: 'q-30', tema: 'tema2', title: 'P30 - Variables mínimas de una Cola (Cuadro)', text: 'primero ultimo capacidad cuantos cola variables cuadro tilde' },
+        { id: 'q-31', tema: 'tema3', title: 'P31 - Lista Enlazada Simple en C# (Esquema)', text: 'lista enlazada simple nodos primero null c# esquema flechas reloj' },
+        { id: 'q-32', tema: 'tema4', title: 'P32 - Lista Doblemente Enlazada en C# (Esquema)', text: 'lista doblemente enlazada siguiente anterior primero ultimo esquema flechas reloj' },
+        { id: 'q-33', tema: 'tema1', title: 'P33 - Lista Enlazada Simple Circular (Esquema)', text: 'lista circular simple ultimo apunta a primero ciclo esquema flechas reloj' },
+        { id: 'q-34', tema: 'tema2', title: 'P34 - Lista Doblemente Enlazada Circular (Esquema)', text: 'lista doble circular bidireccional anillo esquema flechas reloj' },
+        { id: 'q-35', tema: 'tema3', title: 'P35 - Representar Cola agrega y elimina (Esquema)', text: 'cola fifo primero ultimo agrega elimina esquema nodos' },
+        { id: 'q-36', tema: 'tema4', title: 'P36 - Representar Pila agrega y elimina (Esquema)', text: 'pila lifo tope agrega elimina desapilar esquema nodos' },
+        { id: 'q-37', tema: 'tema1', title: 'P37 - Cuándo una Lista está vacía (null)', text: 'lista vacia primero igual a null c#' },
+        { id: 'q-38', tema: 'tema2', title: 'P38 - Cuándo una Cola está vacía', text: 'cola vacia primero null cuantos cero' },
+        { id: 'q-39', tema: 'tema3', title: 'P39 - Cuándo una Pila está vacía', text: 'pila vacia tope null desapilar' },
+        { id: 'q-40', tema: 'tema4', title: 'P40 - Cuándo una Lista está llena', text: 'lista llena memoria ram heap clr agotada new' },
+        { id: 'q-41', tema: 'tema1', title: 'P41 - Cuándo una Cola está llena', text: 'cola llena capacidad estatica memoria dinamica heap' },
+        { id: 'q-42', tema: 'tema2', title: 'P42 - Cuándo una Pila está llena', text: 'pila llena tope capacidad memoria ram heap' },
+        { id: 'q-43', tema: 'tema3', title: 'P43 - Qué es un Nodo en C#', text: 'nodo datos propiedades referencia memoria heap c#' },
+        { id: 'q-44', tema: 'tema4', title: 'P44 - Qué es una TDA', text: 'tda tipo de dato abstracto modelo logico operaciones' },
+        { id: 'q-45', tema: 'tema1', title: 'P45 - Relación TDA con un Nodo (Esquema)', text: 'tda nodo composicion estructura unidad basica esquema nodo' },
+        { id: 'q-46', tema: 'tema2', title: 'P46 - Algoritmo búsqueda y modificación en Lista', text: 'algoritmo busqueda modificacion auxiliar lista != null' },
+        { id: 'q-47', tema: 'tema3', title: 'P47 - Recorrido e inserción en Lista', text: 'insercion recorrido new nodo auxiliar primero c#' },
+        { id: 'q-48', tema: 'tema4', title: 'P48 - Algoritmo para eliminar nodo en Lista (Garbage Collector)', text: 'eliminar nodo lista anterior siguiente garbage collector' },
+        { id: 'q-49', tema: 'tema1', title: 'P49 - Algoritmo agregar nodo a Cola', text: 'algoritmo agregar encolar cola primero ultimo' },
+        { id: 'q-50', tema: 'tema2', title: 'P50 - Algoritmo quitar nodo a Pila', text: 'algoritmo quitar desapilar pila tope auxiliar garbage collector' }
+    ];
+
+    function performSearch() {
+        const query = document.getElementById('searchInput').value.toLowerCase().trim();
+        const resultsContainer = document.getElementById('searchResults');
+        resultsContainer.innerHTML = '';
+
+        if (query.length < 2) {
+            resultsContainer.style.display = 'none';
+            return;
+        }
+
+        const matches = questionsData.filter(item => 
+            item.title.toLowerCase().includes(query) || item.text.toLowerCase().includes(query)
+        );
+
+        if (matches.length > 0) {
+            matches.forEach(match => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'search-result-item';
+                itemDiv.innerHTML = `
+                    <span class="search-result-title">${match.title}</span>
+                    <span class="search-result-class">${match.tema.toUpperCase()}</span>
+                `;
+                itemDiv.onclick = () => goToQuestion(match.tema, match.id);
+                resultsContainer.appendChild(itemDiv);
+            });
+            resultsContainer.style.display = 'block';
+        } else {
+            resultsContainer.innerHTML = '<div class="search-result-item" style="color: #94a3b8;">No se encontraron preguntas coincidentes.</div>';
+            resultsContainer.style.display = 'block';
+        }
+    }
+
+    function goToQuestion(temaId, qId) {
+        document.getElementById('searchResults').style.display = 'none';
+        document.getElementById('searchInput').value = '';
+
+        const btn = document.getElementById(`btn-${temaId}`);
+        switchPage(temaId, btn);
+
+        const targetCard = document.getElementById(qId);
+        if (targetCard) {
+            document.querySelectorAll('.question-card').forEach(c => c.classList.remove('highlight'));
+            targetCard.classList.add('highlight');
+            targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            setTimeout(() => targetCard.classList.remove('highlight'), 4000);
+        }
+    }
+
+    function switchPage(pageId, btnElement) {
+        document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+
+        document.getElementById(pageId).classList.add('active');
+        btnElement.classList.add('active');
+    }
+
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.search-container')) {
+            document.getElementById('searchResults').style.display = 'none';
+        }
+    });
+</script>
+
+</body>
+</html>
